@@ -1,0 +1,93 @@
+#include <iostream>
+#include <fstream>
+#include <valarray>
+#include <vector>
+#include <iomanip>
+
+using namespace std;
+
+typedef struct{
+    int year;
+    int pupil_count;
+    string level;
+    string Category;
+    string city;
+    string state;
+    string gender;
+}Details;
+
+
+int main(){
+
+    vector<Details> pupilData;//vector(dynamic array) to store the data in Pupil Statistics
+    ifstream in_stream;//Input file Pupil Statistics
+    ofstream output_Secondary;//Output data into Secondary text file
+    ofstream output_Primary;//Output data into Primary text file
+
+    string inputPath = "/Users/jiazechong/Downloads/Pupil_Statistics.txt";
+    in_stream.open(inputPath);
+    if (!in_stream) {
+        cerr << "Error: Could not open input file\n";
+        return -1;
+    }
+
+    int selection;
+    cout<<"==========================="<<endl;
+    cout<<"1.School Category\n2.Descriptive\n3.Planning"<<endl;
+    cout<<"==========================="<<endl;
+    cout<<"Please Enter The Function You Want To Use:";cin>>selection;
+   
+    while(!in_stream.eof()){ 
+        Details pupil;
+        in_stream>>pupil.level>>pupil.state>>pupil.city>>pupil.year>>pupil.Category>>pupil.gender>>pupil.pupil_count;
+
+        pupilData.push_back(pupil);
+        
+        if (in_stream.eof()) {
+            break;
+        }
+    }
+
+    in_stream.close();
+    
+    if (selection == 1) {
+        
+        output_Primary.open("/Users/jiazechong/Downloads/Primary.txt");
+        output_Secondary.open("/Users/jiazechong/Downloads/Secondary.txt");
+    
+        // Add headers 
+        output_Primary  << setw(15) << left << "Level"<< setw(25) << left << "State"<< setw(25) << left << "City"
+                    << setw(15) << left << "Year"<< setw(15) << left << "Category"<< setw(22) << left << "Gender"
+                    << setw(12) << left << "Pupil Count" << endl;
+
+        output_Secondary << setw(15) << left << "Level"<< setw(25) << left << "State"<< setw(25) << left << "City"
+                     << setw(15) << left << "Year"<< setw(15) << left << "Category"<< setw(22) << left << "Gender"
+                     << setw(12) << left << "Pupil Count" << endl;
+
+        // Write data based on level of study(school category) into respective files using for loop
+        for (int i = 0; i < pupilData.size(); ++i) {
+            if (pupilData[i].level == "Secondary") {
+                output_Secondary<< setw(15) << left << pupilData[i].level << setw(25) << left << pupilData[i].state << setw(25) << left << pupilData[i].city
+                                << setw(15) << left << pupilData[i].year << setw(15) << left << pupilData[i].Category << setw(22) << left << pupilData[i].gender
+                                << setw(12) << left << pupilData[i].pupil_count << endl;
+            }
+            else if (pupilData[i].level == "Primary") {
+                output_Primary  << setw(15) << left << pupilData[i].level << setw(25) << left << pupilData[i].state << setw(25) << left << pupilData[i].city
+                                << setw(15) << left << pupilData[i].year << setw(15) << left << pupilData[i].Category << setw(22) << left << pupilData[i].gender
+                                << setw(12) << left << pupilData[i].pupil_count << endl;
+            }
+        }
+
+        output_Primary.close();
+        output_Secondary.close();
+
+    }
+    else if (selection == 2) {
+    
+    }
+
+
+}
+
+
+
