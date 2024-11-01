@@ -204,7 +204,7 @@ void analyzeDistrictTrends(const vector<Details>& pupilData) {
 
 int main() {
     vector<Details> pupilData;
-    ifstream in_stream("Pupil_Statistics.txt");
+    ifstream in_stream("Pupil_Statistics.txt");//Change file path here
 
     if (!in_stream) {
         cerr << "Error: Could not open input file.\n";
