@@ -17,6 +17,79 @@ typedef struct{
     string gender;
 }Details;
 
+void analyzeDistrictTrends(const vector<Details>& pupilData) {
+    map<string, map<int, int>> primaryDistrictTotals, secondaryDistrictTotals;
+    
+    // Aggregate data by district and year
+    for (const auto& pupil : pupilData) {
+        if (pupil.level == "Primary") {
+            primaryDistrictTotals[pupil.district][pupil.year] += pupil.pupil_count;
+        } else if (pupil.level == "Secondary") {
+            secondaryDistrictTotals[pupil.district][pupil.year] += pupil.pupil_count;
+        }
+    }
+
+    cout << "\n=== SIGNIFICANT DISTRICT CHANGES (≥20%) ===\n";
+    cout << setprecision(2) << fixed;
+    
+    // Format headers
+    cout << setw(15) << "Level" << setw(20) << "District" << setw(15) << "2019" 
+         << setw(15) << "2020" << setw(15) << "Change" << setw(20) << "Status" << endl;
+    cout << string(100, '-') << endl;
+
+    // Analyze Primary Level
+    for (const auto& districtData : primaryDistrictTotals) {
+        string district = districtData.first;
+        int pupils2019 = districtData.second.at(2019);
+        int pupils2020 = districtData.second.at(2020);
+        double pctChange;
+        
+        // Handle new districts (2019 = 0)
+        if (pupils2019 == 0 && pupils2020 > 0) {
+            pctChange = 100.0;  // Set to +100% for new districts
+        } else {
+            pctChange = (pupils2020 - pupils2019) * 100.0 / pupils2019;
+        }
+        
+        if (abs(pctChange) >= 20) {
+            cout << setw(15) << "Primary"
+                 << setw(20) << district 
+                 << setw(15) << pupils2019
+                 << setw(15) << pupils2020
+                 << setw(15) << pctChange<<"%" 
+                 << setw(20) << (pctChange > 0 ? "Increase" : "Decrease") << endl;
+        }
+    }
+
+    // Analyze Secondary Level
+    for (const auto& districtData : secondaryDistrictTotals) {
+        string district = districtData.first;
+        int pupils2019 = districtData.second.at(2019);
+        int pupils2020 = districtData.second.at(2020);
+        double pctChange;
+        
+        // Handle new districts (2019 = 0)
+        if (pupils2019 == 0 && pupils2020 > 0) {
+            pctChange = 100.0;  // Set to +100% for new districts
+        } else {
+            pctChange = (pupils2020 - pupils2019) * 100.0 / pupils2019;
+        }
+        
+        if (abs(pctChange) >= 20) {
+            cout << setw(15) << "Secondary"
+                 << setw(20) << district 
+                 << setw(15) << pupils2019
+                 << setw(15) << pupils2020
+                 << setw(15) << pctChange<<"%" 
+                 << setw(20) << (pctChange > 0 ? "Increase" : "Decrease") << endl;
+        }
+    }
+
+    cout << "\n";
+    cout << "Planning recommendations:\n";
+    cout << "- Districts with increases: Prepare additional resources and staff\n";
+    cout << "- Districts with decreases: Review factors causing enrollment decline\n";
+}
 
 int main(){
 
@@ -184,6 +257,8 @@ int main(){
                 cout << "District: " << district << "\nAverage Pupils: " << mean << "\nStandard Deviation: " << std_dev << endl;
             }
             
+        }else if (selection == 3) {
+            analyzeDistrictTrends(pupilData);
         }
 
         else{
